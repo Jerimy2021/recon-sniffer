@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 import logging
+import json
 import re
 import sys
 from dataclasses import dataclass
@@ -143,6 +144,28 @@ class ReconController:
         )
         self.target_acquired = target
 
+        try:
+            sensor_match = re.search(r"sensor_id=([^&\s]+)", target.body)
+            template_match = re.search(r"template_id=([^&\s]+)", target.body)
+
+            if sensor_match and template_match:
+                config_data = {
+                    "ip_objetivo": target.ip_dst,
+                    "sensor_id": sensor_match.group(1),
+                    "template_id": template_match.group(1),
+                }
+
+                import os
+
+                script_dir = os.path.dirname(os.path.abspath(__file__))
+                config_path = os.path.join(script_dir, "target_config.json")
+
+                with open(config_path, "w") as f:
+                    json.dump(config_data, f, indent=4)
+                logger.info(f"Configuración guardada en: {config_path}")
+        except Exception as e:
+            logger.error(f"Error al guardar la configuración: {e}")
+
         if self.sniffer:
             self.sniffer.stop()
 
@@ -176,9 +199,6 @@ def main():
 
     try:
         logger.info("--- Iniciando Fase I (Sniffing) ---")
-        # NOTA PARA LA SIMULACIÓN LOCAL: Para que Scapy escuche paquetes enviados
-        # en tu propia PC (localhost), en Windows a veces hay que pasarle la interfaz de loopback.
-        # Si estás en Windows, pruébalo sin argumentos primero.
         sniffer.start(timeout=args.timeout)
 
         if controller.target_acquired:

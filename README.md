@@ -18,7 +18,7 @@ Tabla de contenidos
 Visión general
 -----------
 
-`recon-sniffer` es un repo didáctico y práctico para capturas de red y actividades de reconocimiento con `scapy`. Incluye un ejemplo de sniffer (`recon_sniffer.py`), utilidades para gestionar el entorno virtual y un README con guía de arquitectura y GitFlow.
+`recon-sniffer` es un repo didáctico y práctico para capturas de red y actividades de reconocimiento con `scapy`. Incluye un ejemplo de sniffer (`recon_advanced.py`), utilidades para gestionar el entorno virtual y un README con guía de arquitectura y GitFlow.
 
 Arquitectura y estructura de carpetas
 -----------------------------------
@@ -29,7 +29,6 @@ La organización del proyecto está pensada para equipos y ejercicios por fases:
 - `02_Exploitation/` — Herramientas y exploits (si aplica).
 - `03_Report/` — Templates y salidas de reporte.
 - Archivos en la raíz:
-  - `recon_sniffer.py` — sniffer mínimo con Scapy.
   - `simulador_grupo1.py` — script de simulación (ejemplo).
   - `requirements.txt` — dependencias del proyecto.
   - `setup_venv.sh` — script para crear el entorno virtual e instalar dependencias.
@@ -43,7 +42,6 @@ recon-sniffer/
 ├─ 01_Reconnaissance/
 ├─ 02_Exploitation/
 ├─ 03_Report/
-├─ recon_sniffer.py
 ├─ simulador_grupo1.py
 ├─ requirements.txt
 ├─ setup_venv.sh

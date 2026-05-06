@@ -6,47 +6,53 @@ Este proyecto sigue un flujo de trabajo basado en GitFlow: la rama por defecto e
 
 Tabla de contenidos
 - [Visión general](#visión-general)
-- [Arquitectura y estructura de carpetas](#arquitectura-y-estructura-de-carpetas)
+- [Estructura del proyecto](#estructura-del-proyecto)
 - [Instalación y entorno](#instalación-y-entorno)
 - [Uso](#uso)
-- [Flujo de trabajo (GitFlow)](#flujo-de-trabajo-gitflow)
-- [Cambios incluidos en esta feature](#cambios-incluidos-en-esta-feature)
-- [Seguridad y permisos](#seguridad-y-permisos)
+- [Flujo de trabajo (GitFlow) - Estándar](#flujo-de-trabajo-gitflow---estándar)
+- [Protección de ramas y configuración](#protección-de-ramas-y-configuración)
 - [Contribución](#contribución)
 - [Licencia](#licencia)
 
 Visión general
------------
+--------------
 
-`recon-sniffer` es un repo didáctico y práctico para capturas de red y actividades de reconocimiento con `scapy`. Incluye un ejemplo de sniffer (`recon_advanced.py`), utilidades para gestionar el entorno virtual y un README con guía de arquitectura y GitFlow.
+`recon-sniffer` es un repositorio didáctico y práctico para captures de red y actividades de reconocimiento con `scapy`. Incluye ejemplos de sniffers, utilidades para gestionar el entorno virtual y material de apoyo para ejercicios.
 
-Arquitectura y estructura de carpetas
------------------------------------
+Estructura del proyecto
+-----------------------
 
-La organización del proyecto está pensada para equipos y ejercicios por fases:
+La organización del proyecto está pensada para ejercicios por fases y para facilitar el trabajo en equipo siguiendo GitFlow.
 
-- `01_Reconnaissance/` — Scripts y artefactos para reconocimiento y captura.
-- `02_Exploitation/` — Herramientas y exploits (si aplica).
-- `03_Report/` — Templates y salidas de reporte.
-- Archivos en la raíz:
-  - `simulador_grupo1.py` — script de simulación (ejemplo).
-  - `requirements.txt` — dependencias del proyecto.
-  - `setup_venv.sh` — script para crear el entorno virtual e instalar dependencias.
-  - `.gitignore` — reglas para ignorar artefactos locales.
-  - `protection.json` — (metadatos) configuración aplicada para protección de rama `main`.
+- `01_Reconnaissance/` — Scripts y artefactos de reconocimiento.
+  - `recon_advanced.py` — script avanzado de reconocimiento y captura.
+  - `capturas_pantalla/` — capturas de ejemplo usadas en las prácticas.
+- `02_Exploitation/` — Herramientas y pruebas relacionadas con explotación (si aplica).
+- `03_Report/` — Plantillas y salidas para informes.
+
+Archivos en la raíz:
+- `recon_sniffer.py` — sniffer mínimo con Scapy (ejemplo rápido en la raíz).
+- `simulador_grupo1.py` — script de simulación (ejemplo).
+- `requirements.txt` — dependencias del proyecto.
+- `setup_venv.sh` — script para crear el entorno virtual e instalar dependencias.
+- `.gitignore` — reglas para ignorar artefactos locales.
+- `.github/branch_protection.json` — configuración almacenada de protección (se movió desde la raíz a `.github/` por buenas prácticas).
 
 Ejemplo de árbol:
 
-```README.md#L1-25
+```README.md#L1-30
 recon-sniffer/
 ├─ 01_Reconnaissance/
+│  ├─ recon_advanced.py
+│  └─ capturas_pantalla/
 ├─ 02_Exploitation/
 ├─ 03_Report/
+├─ recon_sniffer.py
 ├─ simulador_grupo1.py
 ├─ requirements.txt
 ├─ setup_venv.sh
 ├─ .gitignore
-└─ README.md
+└─ .github/branch_protection.json
 ```
 
 Instalación y entorno
@@ -55,11 +61,11 @@ Instalación y entorno
 Prerequisitos:
 - Python 3.8+
 - pip
-- (Linux) `libpcap` y headers (p. ej. `libpcap-dev`) para soporte Npcap/libpcap si instalas scapy desde fuentes.
+- (Linux) `libpcap` y headers (p. ej. `libpcap-dev`) para soporte si es necesario.
 
 Forma recomendada (script automatizado):
 
-```/dev/null/usage.sh#L1-4
+```README.md#L31-35
 cd /path/to/recon-sniffer
 sh setup_venv.sh
 source .venv/bin/activate
@@ -67,7 +73,7 @@ source .venv/bin/activate
 
 Si quieres hacerlo manualmente:
 
-```/dev/null/usage_manual.sh#L1-4
+```README.md#L36-40
 python3 -m venv .venv
 source .venv/bin/activate
 pip install --upgrade pip
@@ -79,77 +85,104 @@ Uso
 
 Ejecutar el sniffer de ejemplo (requiere permisos de captura - normalmente `sudo` en macOS/Linux):
 
-```/dev/null/run_sniffer.sh#L1-2
+```README.md#L41-44
 source .venv/bin/activate
 sudo python recon_sniffer.py
 ```
 
-El sniffer imprime un resumen simple por paquete IP/TCP y muestra parte del `payload` si existe.
+Para ejecutar el script avanzado de la carpeta `01_Reconnaissance`:
 
-Flujo de trabajo (GitFlow)
--------------------------
+```README.md#L45-47
+source .venv/bin/activate
+sudo python 01_Reconnaissance/recon_advanced.py
+```
 
-Política de ramas y convenciones (resumen):
-- `develop` — rama por defecto; aquí se integran feature branches.
-- `feature/*` — ramas de trabajo originadas desde `develop`. Ejemplo: `feature/update-readme-architecture`.
-- `release/*` — preparan una release a `main` (versionado, pruebas, CI).
-- `hotfix/*` — correcciones urgentes directamente desde `main` y luego se mergean a `develop`.
-- `main` — rama protegida. Solo se actualiza mediante PRs y releases aprobados.
+Flujo de trabajo (GitFlow) - Estándar
+------------------------------------
 
-Comandos típicos (ejemplos):
+Ramas principales:
+- `main` — rama de producción (protegida). Solo se actualiza mediante Pull Requests tras pasar las revisiones y checks.
+- `develop` — rama de integración y desarrollo; rama por defecto del repositorio.
 
-Crear y trabajar en una feature branch:
+Ramas de soporte:
+- `feature/<nombre>` — nuevas funcionalidades. Se crean desde `develop` y se mergean de vuelta a `develop`.
+- `release/<version>` — preparación de una versión para `main`. Se crean desde `develop`, tras pruebas se hace PR a `main` y luego se mergea a `develop`.
+- `hotfix/<nombre>` — corrección urgente en `main`. Se crean desde `main`, se mergean a `main` y `develop`.
+- `bugfix/<nombre>` — correcciones menores (opcionalmente puede usarse `feature/` en su lugar).
 
-```/dev/null/git-feature.sh#L1-6
+Convenciones y pasos típicos:
+
+- Crear una feature:
+
+```README.md#L48-58
 git fetch origin
 git checkout develop
 git pull origin develop
 git checkout -b feature/my-feature
-# trabajar, añadir cambios
+# trabajar en la feature
 git add .
 git commit -m "feat: descripción corta"
 git push -u origin feature/my-feature
-# abrir PR contra develop (usa gh o la UI)
-gh pr create --base develop --head feature/my-feature --title "feat: descripción" --body "Detalles..."
+# abrir PR contra develop (usar la UI o `gh`)
+gh pr create --base develop --head feature/my-feature --title "feat: ..." --body "Detalles..."
 ```
 
-Preparar una release (merge a `main` vía PR):
+- Preparar una release:
 
-```/dev/null/git-release.sh#L1-6
+```README.md#L59-66
 git checkout develop
 git pull origin develop
 git checkout -b release/1.0.0
-# Ajustes, bump de versión, tests
+# ajustar versiones, pruebas, documentación
 git push -u origin release/1.0.0
-gh pr create --base main --head release/1.0.0 --title "release: 1.0.0" --body "Notas de release"
-# Una vez aprobado, mergear y taggear
+# abrir PR a main, revisar y mergear; luego taggear y mergear a develop si es necesario
 ```
 
-Notas:
-- `main` está protegida: requiere al menos 1 aprobación y no permite force-push ni delete.
-- Recomendado: tener checks de CI (GitHub Actions) que sean required_status_checks antes de mergear a `main`.
+- Hotfix (urgente):
 
-Cambios incluidos en esta feature
----------------------------------
+```README.md#L67-73
+git checkout main
+git pull origin main
+git checkout -b hotfix/1.0.1
+# corregir bug
+git commit -am "fix: corrección urgente"
+git push -u origin hotfix/1.0.1
+# abrir PR a main; una vez mergeado, mergear a develop
+```
 
-- Actualización/expansión del `README.md` para documentar arquitectura y flujo de trabajo.
-- Documentación del layout de carpetas y comandos recomendados.
-- Registro de los artefactos ya añadidos al repo: `recon_sniffer.py`, `setup_venv.sh`, `requirements.txt`, `.gitignore`, `protection.json`.
+Políticas recomendadas:
+- No hacer push directo a `main`.
+- Requerir al menos 1 aprobación en PRs hacia `main`.
+- Tener checks de CI (GitHub Actions) que sean `required_status_checks` antes de mergear a `main`.
+- Usar revisiones de código y etiquetas de PR para trackear calidad.
 
-Seguridad y permisos
---------------------
+Protección de ramas y configuración
+-----------------------------------
 
-- El sniffing de paquetes requiere permisos de administrador (p. ej. `sudo`).
-- No ejecutes sniffers en redes donde no tengas autorización explícita.
-- Evita almacenar tokens/credenciales en texto plano en el repo. Usa `gh auth login` o variables de entorno para CI.
+Buenas prácticas para archivos de configuración de repositorio:
+- Archivos de configuración del repositorio (como plantillas, acciones de GitHub o metadatos de protección) deben almacenarse en `.github/` o en `docs/` en lugar de la raíz para mantener la raíz limpia.
+- En este repositorio, `branch_protection.json` contiene la configuración usada para aplicar políticas a `main`. Se ha movido desde la raíz a `.github/branch_protection.json`.
+
+Para (re)aplicar la configuración de protección de rama descrita en `.github/branch_protection.json` se puede usar la API de GitHub o `gh api`:
+
+```README.md#L74-86
+# Usando gh (ejecutar en tu máquina con gh autenticado):
+gh api --method PUT /repos/$OWNER/$REPO/branches/main/protection --input .github/branch_protection.json -H "Accept: application/vnd.github+json"
+
+# Usando curl (requiere GITHUB_TOKEN con permisos repo):
+# export GITHUB_TOKEN=...
+curl -X PUT -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github+json" \
+  https://api.github.com/repos/$OWNER/$REPO/branches/main/protection \
+  -d @.github/branch_protection.json
+```
 
 Contribución
 ------------
 
-1. Crea una `feature/<nombre>` desde `develop`.
+1. Crea una rama `feature/<nombre>` desde `develop`.
 2. Haz cambios y push a tu rama.
-3. Abre un Pull Request contra `develop` y pide revisión.
-4. Tras la revisión y aprobación, el PR se puede mergear a `develop`.
+3. Abre un Pull Request contra `develop` y solicita revisión.
+4. Tras la revisión y aprobación, mergea a `develop`.
 5. Para publicar en `main`, crea una rama `release/*` desde `develop` y abre PR a `main`.
 
 Licencia
@@ -159,7 +192,7 @@ MIT
 
 ---
 
-Si quieres, en esta misma feature puedo:
-- Añadir un template de Pull Request y/o un workflow básico de GitHub Actions (lint y tests) y configurarlo para que sea un `required_status_check` en la protección de `main`.
-- Crear la PR desde esta rama hacia `develop` (ya lo hice automáticamente).
-
+Cambios incluidos en esta feature
+- Corrección de rutas y referencias: `recon_advanced.py` se encuentra en `01_Reconnaissance/` y `capturas_pantalla/` contiene las capturas.
+- Movida la configuración de protección de `protection.json` (raíz) a `.github/branch_protection.json` por buenas prácticas.
+- Aclaraciones y estandarización del flujo GitFlow en el README.

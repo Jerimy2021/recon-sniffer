@@ -3,11 +3,11 @@ import requests
 import time
 
 
-SERIAL_PORT = 'COM3'   # Linux: '/dev/ttyUSB0'
+SERIAL_PORT = 'COM5'   # Linux: '/dev/ttyUSB0'
 BAUD_RATE = 9600
 
 # Server endpoint
-SERVER_URL = "http://localhost:5000/api/auth"
+SERVER_URL = "http://127.0.0.1:5000/api/auth"
 
 
 def parse_data(line):
@@ -26,9 +26,9 @@ def parse_data(line):
         return None
 
 
-def send_to_server(data):
+def send_to_server(url, data):
     try:
-        response = requests.post(SERVER_URL, json=data, timeout=5)
+        response = requests.post(url, json=data, timeout=5)
         print(f"Sent: {data} | Response: {response.status_code}")
     except requests.exceptions.RequestException as e:
         print(f"HTTP Error: {e}")
@@ -47,7 +47,7 @@ def main():
 
                 parsed = parse_data(line)
                 if parsed:
-                    send_to_server(parsed)
+                    send_to_server(SERVER_URL, parsed)
 
     except serial.SerialException as e:
         print(f"Serial error: {e}")

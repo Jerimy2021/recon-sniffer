@@ -1,3 +1,7 @@
+# Branch protection configuration
+
+This file stores the branch protection policy used for `main`. Keep it in `.github/` and apply using the GitHub API or `gh`.
+
 {
   "required_status_checks": null,
   "enforce_admins": true,
